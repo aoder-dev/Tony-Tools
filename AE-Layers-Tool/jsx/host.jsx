@@ -303,6 +303,39 @@ function trimSelectedLayersToKeyframes() {
 
 // ========================= PRE-COMPOSE =========================
 
+// Snapshot the ids of every comp source already in the comp, so the layer
+// created by precompose() can be told apart from pre-existing precomp layers.
+function collectCompSourceIds(comp) {
+    var ids = {};
+    for (var i = 1; i <= comp.numLayers; i++) {
+        try {
+            var src = comp.layer(i).source;
+            if (src && src instanceof CompItem) ids[src.id] = true;
+        } catch (e) {}
+    }
+    return ids;
+}
+
+// Locate the layer precompose() just created. Matching on the source comp id
+// avoids relying on layer indices, which shift as layers leave the parent comp.
+// Falls back to a source-name match.
+function findPrecompLayer(comp, knownSourceIds, compName) {
+    for (var i = 1; i <= comp.numLayers; i++) {
+        var layer = null, src = null;
+        try { layer = comp.layer(i); src = layer.source; } catch (e1) { continue; }
+        if (!src || !(src instanceof CompItem)) continue;
+        if (!knownSourceIds[src.id]) return layer;
+    }
+    for (var j = 1; j <= comp.numLayers; j++) {
+        try {
+            var l2 = comp.layer(j);
+            var s2 = l2.source;
+            if (s2 && s2 instanceof CompItem && s2.name === compName) return l2;
+        } catch (e2) {}
+    }
+    return null;
+}
+
 function autoPreCompose(mode) {
     var comp = getActiveComp();
     if (!comp) return "Error: Select a composition first.";
@@ -322,24 +355,30 @@ function autoPreCompose(mode) {
         layerIndices.sort(function (a, b) { return a - b; });
         var baseName = selected.length === 1 ? selected[0].name : "Precomp";
         var compName = baseName + " [Pre-Comp]";
-        var newLayerIndex = layerIndices[0];
         var moveAttrs = (mode === "move" || mode === "adjust");
-        var preComp = comp.layers.precompose(layerIndices, compName, moveAttrs);
-        if (mode === "adjust" && preComp && preComp instanceof CompItem) {
-            var newDuration = Math.max(1 / comp.frameRate, maxOut - minIn);
-            for (var j = 1; j <= preComp.numLayers; j++) {
-                try { preComp.layer(j).startTime -= minIn; } catch (eS) {}
-            }
-            preComp.displayStartTime = 0;
-            preComp.workAreaStart = 0;
-            preComp.workAreaDuration = newDuration;
-            preComp.duration = newDuration;
-            try {
-                var outer = comp.layer(newLayerIndex);
-                if (outer) {
-                    outer.startTime = minIn;
-                    outer.outPoint = Math.max(outer.inPoint + 1 / comp.frameRate, maxOut);
+
+        var knownSourceIds = collectCompSourceIds(comp);
+        comp.layers.precompose(layerIndices, compName, moveAttrs);
+
+        var newLayer = findPrecompLayer(comp, knownSourceIds, compName);
+        if (!newLayer) return "Error: Pre-compose ran but the new pre-comp layer could not be found.";
+
+        if (mode === "adjust") {
+            var preComp = null;
+            try { preComp = newLayer.source; } catch (eSrc) {}
+            if (preComp && preComp instanceof CompItem) {
+                var newDuration = Math.max(1 / comp.frameRate, maxOut - minIn);
+                for (var j = 1; j <= preComp.numLayers; j++) {
+                    try { preComp.layer(j).startTime -= minIn; } catch (eS) {}
                 }
+                try { preComp.displayStartTime = 0; } catch (eDs) {}
+                try { preComp.workAreaStart = 0; } catch (eWs) {}
+                try { preComp.workAreaDuration = newDuration; } catch (eWd) {}
+                try { preComp.duration = newDuration; } catch (eDur) {}
+            }
+            try {
+                newLayer.startTime = minIn;
+                newLayer.outPoint = Math.max(newLayer.inPoint + 1 / comp.frameRate, maxOut);
             } catch (eO) {}
         }
         return "Pre-composed " + selected.length + " layer(s).";
