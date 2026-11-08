@@ -62,3 +62,7 @@ With `.debug` present, open `http://localhost:8092` in Chrome while the panel is
 ## Status
 
 The manifest and scripts have been validated statically. Host operations use real `app.project`, comp, layer and marker APIs with undo groups, but the panel has not been exercised against a live AE 2024 host in this repository. Install it using the steps above and test each feature in a scratch project first.
+
+## License
+
+Released under the [MIT License](LICENSE).
