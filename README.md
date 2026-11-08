@@ -65,25 +65,26 @@ AE-Layers-Tool/        CEP extension source
 |- js/CSInterface.js   minimal CEP bridge
 |- jsx/host.jsx        ExtendScript: all native AE operations
 |- .debug              remote debug port (8092)
-`- .gitignore
-check.ps1              static consistency check
+|- .gitignore
+|- tools/check.ps1     static consistency check
+`- docs/reference/     reference dumps (ref-bundle.js, ref-css.css, ref-home.html, ref-page.html)
 LICENSE                MIT
-ref-*.*                development scratch (reference dumps, not needed to run the panel)
+README.md              this file
 ```
 
 ## Checks
 
-Run from the repository root:
+Run from any directory:
 
 ```
-powershell -ExecutionPolicy Bypass -File check.ps1
+powershell -ExecutionPolicy Bypass -File AE-Layers-Tool\tools\check.ps1
 ```
 
 It verifies that the CEP manifest is well-formed, that every element id used by `main.js` exists in `index.html`, that the host functions the panel calls are defined in `host.jsx`, and that both scripts keep balanced braces and parentheses.
 
 ## Debugging
 
-With `.debug` present, open `http://localhost:8092` in Chrome while the panel is running to inspect its DOM and console.
+With `AE-Layers-Tool/.debug` present, open `http://localhost:8092` in Chrome while the panel is running to inspect its DOM and console.
 
 ## Compatibility
 

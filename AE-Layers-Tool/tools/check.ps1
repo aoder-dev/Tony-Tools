@@ -1,10 +1,10 @@
 # Consistency checks for the AE-Layers-Tool panel.
-# Run from the repository root:
-#   powershell -ExecutionPolicy Bypass -File check.ps1
+# Run from anywhere:
+#   powershell -ExecutionPolicy Bypass -File AE-Layers-Tool\tools\check.ps1
 
-$root = 'AE-Layers-Tool'
+$root = Split-Path -Parent $PSScriptRoot
 foreach ($f in 'index.html', 'js/main.js', 'jsx/host.jsx', 'CSXS/manifest.xml') {
-  if (-not (Test-Path "$root/$f")) { throw "Missing $root/$f - run this from the repository root." }
+  if (-not (Test-Path "$root/$f")) { throw "Missing $root/$f - the script must stay inside AE-Layers-Tool/tools." }
 }
 
 $html = Get-Content "$root/index.html" -Raw

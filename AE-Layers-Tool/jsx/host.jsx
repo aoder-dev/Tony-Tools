@@ -1125,12 +1125,21 @@ function alignClipsToBeats(fitSpan) {
                 var beatSpan = b2 - b1;
                 var clipSpan = layer.outPoint - layer.inPoint;
                 if (fitSpan && clipSpan > 0) {
-                    // retime clip to fit beat interval
+                    // retime clip to fit beat interval; a remap property without
+                    // a usable key pair must not abort the in/out alignment
                     try { layer.timeRemapEnabled = true; } catch (eTr) {}
-                    var tr = layer.property("ADBE Time Remapping");
+                    var tr = null;
+                    try { tr = layer.property("ADBE Time Remapping"); } catch (eTrp) {}
                     if (tr) {
-                        tr.setValueAtTime(b1, tr.keyValue(1));
-                        tr.setValueAtTime(b2, tr.keyValue(tr.numKeys));
+                        var v1 = 0, v2 = clipSpan;
+                        try { if (layer.source && layer.source.duration > 0) v2 = layer.source.duration; } catch (eDur) {}
+                        if (tr.numKeys >= 2) {
+                            try { v1 = tr.keyValue(1); v2 = tr.keyValue(tr.numKeys); } catch (eKv) {}
+                        }
+                        try {
+                            tr.setValueAtTime(b1, v1);
+                            tr.setValueAtTime(b2, v2);
+                        } catch (eSet) {}
                     }
                 }
                 layer.startTime = layer.startTime + (b1 - layer.inPoint);
