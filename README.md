@@ -95,7 +95,27 @@ powershell -ExecutionPolicy Bypass -File package.ps1
 
 It writes `dist/Tony-Tools-<version>.zip`, taking the version from `CSXS/manifest.xml`. Extract the archive into `%APPDATA%\Adobe\CEP\extensions` to install the panel.
 
-The README, `check.ps1`, `package.ps1`, `.debug` and the `ref-*` reference dumps are deliberately excluded from the archive. A `.zxp` is the same payload signed with Adobe's `ZXPSignCmd`; use that tool with your own certificate if you need a signed installer.
+### Signed .zxp
+
+`package.ps1 -Sign` builds and verifies `dist/Tony-Tools-<version>.zxp` instead of the zip. It needs Adobe's `ZXPSignCmd` (download it from [Adobe's CEP Resources](https://github.com/Adobe-CEP/CEP-Resources/tree/master/ZXPSignCMD)) and a PKCS#12 certificate:
+
+```
+powershell -ExecutionPolicy Bypass -File package.ps1 -Sign `
+  -CertificatePath C:\certs\Tony-Tools.p12 `
+  -CertificatePassword '<password>' `
+  -ZXPSignCmdPath C:\tools\ZXPSignCmd.exe `
+  -TimestampUrl http://timestamp.digicert.com
+```
+
+`-ZXPSignCmdPath` can be omitted when `ZXPSignCmd.exe` is on `PATH` or `ZXPSIGNCMD_PATH` points to it. `-TimestampUrl` is optional but recommended so the signature stays verifiable after the certificate expires. The `.zxp` contains the same runtime payload at its root, ready for Extension Manager. The certificate password is passed to `ZXPSignCmd` on its command line, so sign on a trusted machine and keep the `.p12` file out of the repository.
+
+For a self-signed certificate, run:
+
+```
+ZXPSignCmd -selfSignedCert US CA "Your Company" "Tony's Tools" <password> Tony-Tools.p12
+```
+
+The README, `check.ps1`, `package.ps1`, `.debug` and the `ref-*` reference dumps are deliberately excluded from the archive.
 
 ## Debugging
 
