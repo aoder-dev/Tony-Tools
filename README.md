@@ -1,8 +1,6 @@
 # Tony's Tools
 
-A dockable **Adobe After Effects** panel for layer utilities, captions, Twixtor/flowframe workflows, beat markers, easing graphs and a global theme system. Built as a CEP extension: plain HTML/CSS/JS with ExtendScript and no build step.
-
-The extension lives in [`AE-Layers-Tool/`](AE-Layers-Tool/README.md), alongside its full documentation.
+A dockable **Adobe After Effects** panel for layer utilities, captions, Twixtor/flowframe workflows, beat markers, easing graphs and a global theme system. Built as a CEP extension: plain HTML/CSS/JS with ExtendScript, no build step and no runtime dependencies.
 
 ## Requirements
 
@@ -28,40 +26,75 @@ With `PlayerDebugMode` enabled the panel does not need to be signed and no `.zxp
 
 ## Features
 
-- **Layers** - comp statistics, keyframe stretch/trim helpers, auto pre-compose, `.ffx` user presets, adjustment-layer and null steppers.
-- **Captions** - paste `seconds | text` lines and generate real text layers.
-- **Twixtor Studios** - Anime/Film flowframe modes, beat alignment, cubic-bezier time-remap editor.
-- **Beats (BeatMark Pro)** - audio-amplitude analysis, peak detection, marker names and colours, duplicate-safe marker generation.
-- **Graphs** - full cubic-bezier easing editor with presets, copy, read-from-AE and apply.
-- **Theme system** - accent colour, four darkness levels, six presets, persisted in `localStorage`.
+### Layers
+- **Active comp stats** - layers, adjustment layers, nulls, precomps, text layers, effect count, keyframe count and most-used effect, read live from `app.project`.
+- **KF Assistant**
+  - *Stretch KF -> Layer* re-times every keyframe of the selected layers so the first key sits on the layer in point and the last on its out point, without changing the layer duration or its `stretch`. It walks nested property groups (effects, masks, shape contents), skips Time Remapping, keeps locked layers locked and carries over values, interpolation and temporal ease where AE allows it.
+  - *Trim Layer -> KF* trims the layer in and out points to its first and last keyframe.
+- **Pre-Compose** - Auto Pre-Compose with Leave attributes / Move attributes / Adjust comp modes.
+- **User presets** - scans the AE `User Presets` folder for `.ffx` presets, with search and click-to-apply on the selected layers.
+- **Adj. Layer / Null Object** - steppers (1-20) that create adjustment layers or nulls.
 
-See [`AE-Layers-Tool/README.md`](AE-Layers-Tool/README.md) for the complete feature list, file layout and implementation notes.
+### Captions
+Paste `seconds | text` lines and set duration and font size to generate real AE text layers (centered, near the bottom of the comp). Captions can be removed again by layer name.
+
+### Twixtor Studios
+Anime/Film flowframe modes (frame blending + Pixel Motion, precompose into `[Flowframe]` comps, time-remap speed, optional source-resolution precomps), Align Clips To Beats, Fit Between Beats, and an inline time-remap cubic-bezier editor with Apply to Keyframes and Read values from AE.
+
+### Beats (BeatMark Pro)
+- **Audio layer** dropdown and Refresh, plus **Generate Audio Amplitude Layer**, which runs AE's *Animation > Keyframe Assistant > Convert Audio to Keyframes* command through `app.findMenuCommandId` / `app.executeCommand` (the audio layer must be selected in the timeline). A usable existing amplitude layer offers reuse or regeneration, and the status distinguishes missing layer, no usable keyframes and ready.
+- **Detection** - Strongest Beats or All Beats, local-peak detection over the real `Both Channels -> Slider` keyframes with mode-specific thresholds and minimum beat spacing, frame-snapped to the comp.
+- **Marker names** - Default ("Beat"), Custom, Sequential (prefix + number).
+- **Marker colours** - Random, Single (AE's 16 label colours, default Aqua) or Strength Based (red = strongest, cooler colours for weaker peaks).
+- **Buttons** - Generate Beat Markers (undoable, duplicate-safe), Clear Markers (removes only tool-generated beat markers and preserves unrelated ones) and Remove Amp Layers (confirms first, never touches the original audio).
+
+### Graphs
+Full cubic-bezier editor with 12 presets (Linear to Back Out), draggable control points, manual `cubic-bezier(...)` input, copy, read current easing from AE, set linear and apply temporal ease to the selected keys or all keys of the selected layers. Influence is sent inside AE's legal 0.1-100 range.
+
+### Theme
+Global accent colour (swatches and custom picker), four darkness levels and six presets (Charcoal, Midnight, Warm Amber, Violet, Teal, Monochrome), persisted in `localStorage` and restored on reopen.
 
 ## Repository layout
 
 ```
 AE-Layers-Tool/        CEP extension source
 |- CSXS/manifest.xml   CEP manifest (AEFT 17.0-99.9, CEP 9 runtime)
-|- index.html          panel UI
-|- css/styles.css      theme
+|- index.html          panel UI (5 tabs, dialogs, toasts)
+|- css/styles.css      dark neon theme
 |- js/main.js          frontend logic and evalScript bridge
 |- js/CSInterface.js   minimal CEP bridge
-|- jsx/host.jsx        ExtendScript operations
+|- jsx/host.jsx        ExtendScript: all native AE operations
 |- .debug              remote debug port (8092)
-`- README.md           extension documentation
-
-*.ps1, ref-*.*         development scratch: validation helpers and reference dumps
+`- .gitignore
+check.ps1              static consistency check
+LICENSE                MIT
+ref-*.*                development scratch (reference dumps, not needed to run the panel)
 ```
 
-The loose PowerShell scripts and `ref-` dumps at the repository root are development scratch used while building the panel: environment and state checks, syntax validation, and reference copies of the panel bundle. They are not part of the extension and are not needed to install or run it.
+## Checks
+
+Run from the repository root:
+
+```
+powershell -ExecutionPolicy Bypass -File check.ps1
+```
+
+It verifies that the CEP manifest is well-formed, that every element id used by `main.js` exists in `index.html`, that the host functions the panel calls are defined in `host.jsx`, and that both scripts keep balanced braces and parentheses.
 
 ## Debugging
 
 With `.debug` present, open `http://localhost:8092` in Chrome while the panel is running to inspect its DOM and console.
 
+## Compatibility
+
+- After Effects 2024 (24.x) is the primary target; the manifest host range `[17.0,99.9]` covers AE 2020-2026.
+- ExtendScript host script (ES3) using only APIs available in AE 24.x (precompose, timeRemapEnabled, setTemporalEaseAtKey, markerProperty, applyPreset).
+- Panel JavaScript is ES5-compatible for the CEP 9 Chromium engine.
+- Windows only, matching the original.
+
 ## Status
 
-The manifest and scripts have been validated statically. Host operations use real `app.project`, comp, layer and marker APIs with undo groups, but the panel has not been exercised against a live AE 2024 host in this repository. Install it using the steps above and test each feature in a scratch project first.
+The manifest and scripts pass the static checks above. Host operations use real `app.project`, comp, layer and marker APIs with undo groups, but the panel has not been exercised against a live AE 2024 host in this repository. Install it with the steps above and test each feature in a scratch project first.
 
 ## License
 

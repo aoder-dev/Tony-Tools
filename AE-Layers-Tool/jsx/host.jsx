@@ -114,7 +114,90 @@ function createNullObjects(name, count) {
 
 // ========================= KF ASSISTANT =========================
 
-// Stretch the selected layer(s) duration so its keyframes span the full layer duration.
+// ---- KF Assistant helpers ----
+
+// Collect every keyed property under a layer or property group, including
+// nested groups such as effects, masks and shape contents. Time Remapping is
+// skipped: its keys describe source time, not animation timing.
+function collectKeyedProperties(group, out) {
+    if (!group) return out;
+    for (var i = 1; i <= group.numProperties; i++) {
+        var p = null;
+        try { p = group.property(i); } catch (eP) { continue; }
+        if (!p) continue;
+        try {
+            if (p.propertyType === PropertyType.PROPERTY) {
+                if (p.numKeys > 0 && p.matchName !== "ADBE Time Remapping") out.push(p);
+            } else if (p.numProperties > 0) {
+                collectKeyedProperties(p, out);
+            }
+        } catch (eC) {}
+    }
+    return out;
+}
+
+// Move one property's keys to targetT + (t - originT) * factor, carrying over
+// values, interpolation and temporal ease. New keys are written before the old
+// ones are removed, so a failed write can never leave the property empty.
+function retimePropertyKeys(prop, originT, targetT, factor) {
+    var n = prop.numKeys;
+    if (!n) return false;
+    var keys = [];
+    for (var i = 1; i <= n; i++) {
+        var k = { t: prop.keyTime(i), v: prop.keyValue(i), nv: 0, idx: 0 };
+        try { k.inType = prop.keyInInterpolationType(i); } catch (e1) { k.inType = null; }
+        try { k.outType = prop.keyOutInterpolationType(i); } catch (e2) { k.outType = null; }
+        try { k.inEase = prop.keyInTemporalEase(i); } catch (e3) { k.inEase = null; }
+        try { k.outEase = prop.keyOutTemporalEase(i); } catch (e4) { k.outEase = null; }
+        try { k.cont = prop.keyTemporalContinuous(i); } catch (e5) { k.cont = null; }
+        try { k.auto = prop.keyTemporalAutoBezier(i); } catch (e6) { k.auto = null; }
+        k.nv = targetT + (k.t - originT) * factor;
+        keys.push(k);
+    }
+    var added = 0;
+    for (var a = 0; a < keys.length; a++) {
+        try {
+            var idx = prop.setValueAtTime(keys[a].nv, keys[a].v);
+            if (idx !== null && idx !== undefined) { keys[a].idx = idx; added++; }
+        } catch (eAdd) {}
+    }
+    if (added === 0) return false;
+    for (var b = 0; b < keys.length; b++) {
+        if (!keys[b].idx) continue;
+        var ki = keys[b].idx;
+        try {
+            if (keys[b].inType !== null && keys[b].outType !== null) {
+                prop.setInterpolationTypeAtKey(ki, keys[b].inType, keys[b].outType);
+            }
+        } catch (eI) {}
+        try {
+            if (keys[b].inEase && keys[b].outEase && keys[b].inEase.length === keys[b].outEase.length) {
+                prop.setTemporalEaseAtKey(ki, keys[b].inEase, keys[b].outEase);
+            }
+        } catch (eE) {}
+        try { if (keys[b].cont !== null) prop.setTemporalContinuousAtKey(ki, keys[b].cont); } catch (eCont) {}
+        try { if (keys[b].auto !== null) prop.setTemporalAutoBezierAtKey(ki, keys[b].auto); } catch (eAuto) {}
+    }
+    for (var c = 0; c < keys.length; c++) {
+        if (!keys[c].idx) continue;
+        var oldT = keys[c].t;
+        var moved = false;
+        for (var d = 0; d < keys.length; d++) {
+            if (keys[d].idx && Math.abs(keys[d].nv - oldT) < 0.0001) { moved = true; break; }
+        }
+        if (moved) continue;
+        var live = -1;
+        for (var e = 1; e <= prop.numKeys; e++) {
+            if (Math.abs(prop.keyTime(e) - oldT) < 0.0001) { live = e; break; }
+        }
+        if (live > 0) { try { prop.removeKey(live); } catch (eRm) {} }
+    }
+    return true;
+}
+
+// Stretch KF -> Layer: re-time every keyframe of the selected layers so the
+// first key lands on each layer's in point and the last on its out point. The
+// layer duration, in/out points and stretch are left untouched.
 function stretchSelectedLayersKeyframesToLayer() {
     var comp = getActiveComp();
     if (!comp) return "Error: Open a comp first.";
@@ -122,51 +205,49 @@ function stretchSelectedLayersKeyframesToLayer() {
     if (!sel || sel.length === 0) return "Error: Select layer(s) with keyframes first.";
     app.beginUndoGroup("Stretch KF To Layer");
     try {
-        var stretched = 0;
+        var stretched = 0, skipped = 0;
         for (var i = 0; i < sel.length; i++) {
             var layer = sel[i];
-            if (layer.locked) { try { layer.locked = false; } catch (eL) { continue; } }
-            // find first and last keyframe time across all properties
+            var wasLocked = false;
+            try { wasLocked = !!layer.locked; } catch (eLk) {}
+            if (wasLocked) { try { layer.locked = false; } catch (eUl) { skipped++; continue; } }
+
+            var props = [];
+            try { collectKeyedProperties(layer, props); } catch (eCol) {}
+            if (props.length === 0) {
+                if (wasLocked) { try { layer.locked = true; } catch (eRl) {} }
+                skipped++;
+                continue;
+            }
+
             var firstT = null, lastT = null;
-            for (var p = 1; p <= layer.numProperties; p++) {
-                var pg = layer.property(p);
-                if (pg && pg.numProperties) {
-                    for (var q = 1; q <= pg.numProperties; q++) {
-                        var pr = pg.property(q);
-                        if (pr && pr.numKeys >= 2) {
-                            var t0 = pr.keyTime(1), t1 = pr.keyTime(pr.numKeys);
-                            if (firstT === null || t0 < firstT) firstT = t0;
-                            if (lastT === null || t1 > lastT) lastT = t1;
-                        }
-                    }
-                } else if (pg && pg.propertyType === PropertyType.PROPERTY && pg.numKeys >= 2) {
-                    var a0 = pg.keyTime(1), a1 = pg.keyTime(pg.numKeys);
-                    if (firstT === null || a0 < firstT) firstT = a0;
-                    if (lastT === null || a1 > lastT) lastT = a1;
-                }
+            for (var p = 0; p < props.length; p++) {
+                try {
+                    var t0 = props[p].keyTime(1);
+                    var tn = props[p].keyTime(props[p].numKeys);
+                    if (firstT === null || t0 < firstT) firstT = t0;
+                    if (lastT === null || tn > lastT) lastT = tn;
+                } catch (eT) {}
             }
-            if (firstT === null || lastT === null) continue;
-            var span = Math.max(comp.frameDuration, lastT - firstT);
-            var layerDur = Math.max(comp.frameDuration, layer.outPoint - layer.inPoint);
-            var stretchFactor = layerDur / span;
-            for (var p2 = 1; p2 <= layer.numProperties; p2++) {
-                var pg2 = layer.property(p2);
-                if (!pg2) continue;
-                if (pg2.numProperties) {
-                    for (var q2 = 1; q2 <= pg2.numProperties; q2++) {
-                        var pr2 = pg2.property(q2);
-                        if (pr2 && pr2.numKeys >= 2 && !pr2.dimensionsReduced) {
-                            try { pr2.startTime = pr2.startTime * stretchFactor; } catch (eST) {}
-                        }
-                    }
-                }
+            var span = (firstT === null) ? 0 : lastT - firstT;
+            var layerDur = 0;
+            try { layerDur = layer.outPoint - layer.inPoint; } catch (eD) {}
+            if (firstT === null || span <= 0 || layerDur <= 0) {
+                if (wasLocked) { try { layer.locked = true; } catch (eRl2) {} }
+                skipped++;
+                continue;
             }
-            // scale layer timing via stretch
-            try { layer.stretch = Math.round(100 * stretchFactor); } catch (eStr) {}
-            stretched++;
+
+            var factor = layerDur / span;
+            var changed = 0;
+            for (var p2 = 0; p2 < props.length; p2++) {
+                try { if (retimePropertyKeys(props[p2], firstT, layer.inPoint, factor)) changed++; } catch (eR) {}
+            }
+            if (wasLocked) { try { layer.locked = true; } catch (eRl3) {} }
+            if (changed > 0) stretched++; else skipped++;
         }
-        if (stretched < 1) return "Error: No layers with 2+ keyframes found.";
-        return "Keyframes stretched to fit layer on " + stretched + " layer(s).";
+        if (stretched < 1) return "Error: No keyframes could be stretched." + (skipped > 0 ? " Skipped " + skipped + " layer(s)." : "");
+        return "Stretched keyframes to the layer duration on " + stretched + " layer(s)." + (skipped > 0 ? " Skipped " + skipped + "." : "");
     } catch (err) {
         return "Error: " + err.toString();
     } finally {
