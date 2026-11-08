@@ -14,11 +14,13 @@ A dockable **Adobe After Effects** panel for layer utilities, captions, Twixtor/
    - `HKEY_CURRENT_USER\Software\Adobe\CSXS.11`
    - `HKEY_CURRENT_USER\Software\Adobe\CSXS.10`
    - `HKEY_CURRENT_USER\Software\Adobe\CSXS.9`
-2. Copy or symlink the `AE-Layers-Tool` folder into your CEP extensions directory:
+2. Copy or symlink the repository root into your CEP extensions directory:
 
    ```
-   %APPDATA%\Adobe\CEP\extensions\AE-Layers-Tool
+   %APPDATA%\Adobe\CEP\extensions\Tony-Tools
    ```
+
+   The folder must contain `CSXS/manifest.xml` and `index.html` at its top level.
 
 3. Restart After Effects and open **Window > Extensions > AE Layer Tools**.
 
@@ -57,34 +59,33 @@ Global accent colour (swatches and custom picker), four darkness levels and six 
 ## Repository layout
 
 ```
-AE-Layers-Tool/        CEP extension source
-|- CSXS/manifest.xml   CEP manifest (AEFT 17.0-99.9, CEP 9 runtime)
-|- index.html          panel UI (5 tabs, dialogs, toasts)
-|- css/styles.css      dark neon theme
-|- js/main.js          frontend logic and evalScript bridge
-|- js/CSInterface.js   minimal CEP bridge
-|- jsx/host.jsx        ExtendScript: all native AE operations
-|- .debug              remote debug port (8092)
-|- .gitignore
-|- tools/check.ps1     static consistency check
-`- docs/reference/     reference dumps (ref-bundle.js, ref-css.css, ref-home.html, ref-page.html)
+CSXS/manifest.xml      CEP manifest (AEFT 17.0-99.9, CEP 9 runtime)
+index.html             panel UI (5 tabs, dialogs, toasts)
+css/styles.css         dark neon theme
+js/main.js             frontend logic and evalScript bridge
+js/CSInterface.js      minimal CEP bridge
+jsx/host.jsx           ExtendScript: all native AE operations
+.debug                 remote debug port (8092)
+.gitignore
+check.ps1              static consistency check
+ref-*.*                development scratch (reference dumps, not needed to run the panel)
 LICENSE                MIT
 README.md              this file
 ```
 
 ## Checks
 
-Run from any directory:
+Run from the repository root, or pass the full script path from anywhere:
 
 ```
-powershell -ExecutionPolicy Bypass -File AE-Layers-Tool\tools\check.ps1
+powershell -ExecutionPolicy Bypass -File check.ps1
 ```
 
 It verifies that the CEP manifest is well-formed, that every element id used by `main.js` exists in `index.html`, that the host functions the panel calls are defined in `host.jsx`, and that both scripts keep balanced braces and parentheses.
 
 ## Debugging
 
-With `AE-Layers-Tool/.debug` present, open `http://localhost:8092` in Chrome while the panel is running to inspect its DOM and console.
+With `.debug` present, open `http://localhost:8092` in Chrome while the panel is running to inspect its DOM and console.
 
 ## Compatibility
 
