@@ -320,12 +320,16 @@ function collectCompSourceIds(comp) {
 // avoids relying on layer indices, which shift as layers leave the parent comp.
 // Falls back to a source-name match.
 function findPrecompLayer(comp, knownSourceIds, compName) {
+    var unknown = null;
     for (var i = 1; i <= comp.numLayers; i++) {
         var layer = null, src = null;
         try { layer = comp.layer(i); src = layer.source; } catch (e1) { continue; }
         if (!src || !(src instanceof CompItem)) continue;
-        if (!knownSourceIds[src.id]) return layer;
+        if (knownSourceIds[src.id]) continue;
+        if (src.name === compName) return layer;
+        if (!unknown) unknown = layer;
     }
+    if (unknown) return unknown;
     for (var j = 1; j <= comp.numLayers; j++) {
         try {
             var l2 = comp.layer(j);
@@ -478,12 +482,13 @@ function applyTwixtorClips(mode, speedPercent, useSourceResolution) {
                 comp.motionBlur = true;
 
                 var preName = shot.name + " [Flowframe]";
+                var knownIds = collectCompSourceIds(comp);
                 try { comp.layers.precompose([shot.index], preName, true); } catch (ePre) {
                     if (wasLocked) { try { layer.locked = true; } catch (eRl) {} }
                     skipped++;
                     continue;
                 }
-                var newLayer = comp.layer(shot.index);
+                var newLayer = findPrecompLayer(comp, knownIds, preName);
                 if (!newLayer) { skipped++; continue; }
                 if (wasLocked) { try { newLayer.locked = false; } catch (eUn) {} }
 
