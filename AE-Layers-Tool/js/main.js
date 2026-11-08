@@ -41,7 +41,7 @@
     }
 
     function escapeHtml(s) {
-        return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
     }
 
     function $id(id) { return document.getElementById(id); }
@@ -322,7 +322,7 @@
         }
     }
 
-    function loadPresets(folderOverride) {
+    function loadPresets(folderOverride, quiet) {
         var req = window.require || (window.cep_node && window.cep_node.require);
         if (!req) {
             $id("preset-list").innerHTML = '<div class="empty-note">Node not available — set folder path in host</div>';
@@ -345,7 +345,7 @@
         if (!folder || !fs.existsSync(folder)) {
             presets = [];
             renderPresets();
-            toast("No preset folder found", "info", "Click the gear icon and set your User Presets folder.");
+            if (!quiet) toast("No preset folder found", "info", "Click the gear icon and set your User Presets folder.");
             return;
         }
         try { localStorage.setItem("aelt_preset_folder", folder); } catch (e) {}
@@ -371,7 +371,7 @@
         found.sort(function (a, b) { return a.name.localeCompare(b.name); });
         presets = found;
         renderPresets();
-        toast("Presets loaded", "success", "Loaded " + found.length + " preset" + (found.length === 1 ? "" : "s") + ".");
+        if (!quiet) toast("Presets loaded", "success", "Loaded " + found.length + " preset" + (found.length === 1 ? "" : "s") + ".");
     }
 
     $id("btn-refresh-presets").addEventListener("click", function () {
@@ -387,7 +387,11 @@
         p = p.trim().replace(/^"(.*)"$/, "$1");
         loadPresets(p);
     });
-    $id("preset-search").addEventListener("input", renderPresets);
+    var presetSearchTimer = null;
+    $id("preset-search").addEventListener("input", function () {
+        clearTimeout(presetSearchTimer);
+        presetSearchTimer = setTimeout(renderPresets, 120);
+    });
     $id("btn-clear-search").addEventListener("click", function () {
         $id("preset-search").value = "";
         renderPresets();
@@ -396,7 +400,7 @@
     (function () {
         var saved = "";
         try { saved = localStorage.getItem("aelt_preset_folder") || ""; } catch (e) {}
-        loadPresets(saved);
+        loadPresets(saved, true);
     })();
 
     // ---------------- captions ----------------
@@ -409,7 +413,7 @@
             var row = rows[i].trim();
             if (!row) continue;
             var m = row.split("|");
-            if (m.length < 2) { lines.push([String(i * 2), row]); continue; }
+            if (m.length < 2) { lines.push([String(lines.length * 2), row]); continue; }
             lines.push([m[0].trim(), m.slice(1).join("|").trim()]);
         }
         if (lines.length === 0) { toast("No captions", "error", "No valid caption lines found."); return; }
@@ -640,8 +644,8 @@
 
     function easingCall(cp1x, cp1y, cp2x, cp2y) {
         // convert bezier control points to speed/influence approximation for setTemporalEaseAtKey
-        var outInfluence = Math.round(clamp(cp1x, 0.01, 1) * 100 * 3 * 10) / 10;
-        var inInfluence = Math.round(clamp(1 - cp2x, 0.01, 1) * 100 * 3 * 10) / 10;
+        var outInfluence = Math.round(clamp(cp1x, 0.01, 1) * 100 * 10) / 10;
+        var inInfluence = Math.round(clamp(1 - cp2x, 0.01, 1) * 100 * 10) / 10;
         var startSlope = Math.round(clamp(cp1y / Math.max(cp1x, 0.01), 0, 3) * 100) / 100;
         var endSlope = Math.round(clamp((1 - cp2y) / Math.max(1 - cp2x, 0.01), 0, 3) * 100) / 100;
         callHost("applyEasingToKeyframes(" + cp1x + ", " + cp1y + ", " + cp2x + ", " + cp2y + ", " +
@@ -800,6 +804,7 @@
     for (var n2 = 0; n2 < namingRadios.length; n2++) {
         namingRadios[n2].addEventListener("change", updateNamingInputs);
     }
+    updateNamingInputs();
 
     $id("btn-generate-beats").addEventListener("click", function () {
         var audioIdx = parseInt($id("sel-audio-layer").value, 10) || 0;
@@ -830,7 +835,7 @@
         if (naming === "custom") nameValue = $id("name-custom").value.trim() || "Drop";
         if (naming === "sequential") nameValue = $id("name-sequential").value.trim() || "Scene";
         var args = ', "' + naming.replace(/"/g, '\\"') + '", "' + String(nameValue).replace(/"/g, '\\"') + '"';
-        callHost("clearToolMarkers(true" + args + ")", function (r) {
+        callHost("clearToolMarkers(" + args.replace(/^,\s*/, "") + ")", function (r) {
             if (isErr(r)) toast("Clear Markers failed", "error", r); else toast("Clear Markers", "info", r);
         });
     });

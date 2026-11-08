@@ -38,11 +38,11 @@ function getCompStats() {
         try { if (layer.source && layer.source instanceof CompItem) stats.precompLayers++; } catch (eP) {}
         try { if (layer instanceof TextLayer) stats.textLayers++; } catch (eT) {}
         try {
-            var fx = layer("Effects");
+            var fx = layer.property("ADBE Effect Parade");
             if (fx) {
                 stats.effectCount += fx.numProperties;
                 for (var j = 1; j <= fx.numProperties; j++) {
-                    var nm = fx.property(j).matchName || fx.property(j).name;
+                    var nm = fx.property(j).name || fx.property(j).matchName;
                     fxMap[nm] = (fxMap[nm] || 0) + 1;
                 }
             }
@@ -1026,9 +1026,14 @@ function alignClipsToBeats(fitSpan) {
 // ========================= EASING / GRAPHS =========================
 
 function buildEaseArrayFromSpeeds(speeds, influence) {
+    // AE accepts influence only in 0.1..100; clamp so unusual curves degrade
+    // to the nearest legal ease instead of throwing.
+    var inf = parseFloat(influence);
+    if (isNaN(inf)) inf = 33.33;
+    inf = Math.max(0.1, Math.min(100, inf));
     var arr = [];
     for (var d = 0; d < speeds.length; d++) {
-        arr.push(new KeyframeEase(speeds[d], influence));
+        arr.push(new KeyframeEase(speeds[d], inf));
     }
     return arr;
 }
@@ -1170,8 +1175,8 @@ function readEasingFromAE() {
     var endSlope = baseSpeed !== 0 ? endSpeed / baseSpeed : 0;
     var cp1y = startSlope / 3;
     var cp2y = 1 - endSlope / 3;
-    var cp1x = outInf / 300;
-    var cp2x = 1 - inInf / 300;
+    var cp1x = outInf / 100;
+    var cp2x = 1 - inInf / 100;
     function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
     return JSON.stringify({
         propertyName: prop.name,
