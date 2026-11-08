@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="640" viewBox="0 0 1600 640" role="img" aria-label="Tony's Tools - After Effects control panel">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#050708"/>
+      <stop offset="0.55" stop-color="#0A0D10"/>
+      <stop offset="1" stop-color="#050607"/>
+    </linearGradient>
+    <radialGradient id="redGlow" cx="50%" cy="35%" r="50%">
+      <stop offset="0" stop-color="#C4453C" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#C4453C" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="tealGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#5E8FA0" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#5E8FA0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="redLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#C4453C" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#E07A6F"/>
+      <stop offset="1" stop-color="#C4453C" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#FFFFFF" stroke-opacity="0.045" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="640" fill="url(#bg)"/>
+  <rect width="1600" height="640" fill="url(#grid)"/>
+  <ellipse cx="800" cy="250" rx="560" ry="300" fill="url(#redGlow)"/>
+  <ellipse cx="1240" cy="120" rx="360" ry="260" fill="url(#tealGlow)"/>
+  <ellipse cx="300" cy="580" rx="420" ry="220" fill="url(#redGlow)" opacity="0.5"/>
+
+  <path d="M80 80H1520" stroke="#2A2B2E" stroke-width="1"/>
+  <path d="M80 560H1520" stroke="#2A2B2E" stroke-width="1"/>
+  <path d="M80 80V560M1520 80V560" stroke="#2A2B2E" stroke-width="1"/>
+
+  <g transform="translate(800 205)" filter="url(#softGlow)">
+    <rect x="-118" y="-118" width="236" height="236" rx="44" fill="#080A0C" stroke="#C4453C" stroke-opacity="0.55" stroke-width="2"/>
+    <rect x="-99" y="-99" width="198" height="198" rx="33" fill="none" stroke="#2A2B2E" stroke-width="1"/>
+    <g transform="translate(0 4)">
+      <path d="M-72 -32 L0 -68 L72 -32 L0 4 Z" fill="#C4453C" fill-opacity="0.12" stroke="#E07A6F" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M-72 -6 L0 30 L72 -6" fill="none" stroke="#5E8FA0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+      <path d="M-72 18 L0 54 L72 18" fill="none" stroke="#C4453C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+    </g>
+    <circle cx="86" cy="-86" r="4" fill="#E07A6F"/>
+    <path d="M-118 0H-138M118 0H138" stroke="#C4453C" stroke-opacity="0.4" stroke-width="2"/>
+  </g>
+
+  <g font-family="Segoe UI, Arial, sans-serif" text-anchor="middle">
+    <text x="800" y="421" fill="#F5F0EE" font-size="86" font-weight="800" letter-spacing="10">TONY'S TOOLS</text>
+    <path d="M620 442H980" stroke="url(#redLine)" stroke-width="2"/>
+    <text x="800" y="484" fill="#9AA0A6" font-size="21" font-weight="600" letter-spacing="8">AFTER EFFECTS CONTROL PANEL</text>
+  </g>
+
+  <g font-family="Consolas, Courier New, monospace" font-size="15" letter-spacing="3" text-anchor="middle">
+    <g fill="#0B0D10" stroke="#2A2B2E" stroke-width="1">
+      <rect x="439" y="516" width="128" height="38" rx="19"/>
+      <rect x="577" y="516" width="158" height="38" rx="19"/>
+      <rect x="745" y="516" width="146" height="38" rx="19"/>
+      <rect x="901" y="516" width="118" height="38" rx="19"/>
+      <rect x="1029" y="516" width="132" height="38" rx="19"/>
+    </g>
+    <g fill="#B9BEC2">
+      <text x="503" y="541">LAYERS</text>
+      <text x="656" y="541">CAPTIONS</text>
+      <text x="818" y="541">TWIXTOR</text>
+      <text x="960" y="541">BEATS</text>
+      <text x="1095" y="541">GRAPHS</text>
+    </g>
+  </g>
+
+  <text x="800" y="592" fill="#5C6368" font-family="Consolas, Courier New, monospace" font-size="12" letter-spacing="4" text-anchor="middle">CEP 9  /  AE 2020-2026  /  WINDOWS</text>
+</svg>
