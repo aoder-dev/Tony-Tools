@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AE Layer Tools</title>
+<link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ============ HEADER ============ -->
+  <div class="header">
+    <div class="logo-wrap" title="Tony's Tools — After Effects Extension">
+      <svg class="logo-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.287 1.288L3 12l5.8 1.9a2 2 0 0 1 1.288 1.287L12 21l1.9-5.8a2 2 0 0 1 1.287-1.288L21 12l-5.8-1.9a2 2 0 0 1-1.288-1.287Z"/></svg>
+    </div>
+    <h1 class="app-title">Tony's Tools</h1>
+    <div class="toolbar-shell">
+      <button id="btn-reload" class="toolbar-btn" title="Reload panel and refresh scripts">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
+        <span>Reload Script</span>
+      </button>
+    </div>
+    <div class="header-chips">
+      <button id="btn-cache" class="chip chip-cyan" title="Clear disk cache">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
+        <span>CACHE</span>
+      </button>
+      <button id="btn-settings" class="chip chip-primary w-icon" title="Settings">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ TABS ============ -->
+  <div class="main-tabs" id="main-tabs">
+    <button class="main-tab active" data-tab="layers" title="Layers">
+      <span class="tab-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 8-9-5-9 5 9 5 9-5Z"/><path d="m3 8v8l9 5 9-5V8"/><path d="m12 13v8"/></svg></span>
+      <span class="tab-label">LAYERS</span>
+    </button>
+    <button class="main-tab" data-tab="captions" title="Captions">
+      <span class="tab-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="12" x="3" y="11" rx="2" ry="2"/><path d="M7 41h10"/><path d="M7 41a5 5 0 0 0-.004-10"/></svg></span>
+      <span class="tab-label">CAPTIONS</span>
+    </button>
+    <button class="main-tab" data-tab="templates" title="Twixtor Studios">
+      <span class="tab-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 3v18"/><path d="M3 7.5h4"/><path d="M3 12h18"/><path d="M3 16.5h4"/><path d="M17 3v18"/><path d="M17 7.5h4"/><path d="M17 16.5h4"/></svg></span>
+      <span class="tab-label">TWIXTOR STUDIOS</span>
+    </button>
+    <button class="main-tab" data-tab="beats" title="Beats">
+      <span class="tab-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>
+      <span class="tab-label">BEATS</span>
+    </button>
+    <button class="main-tab" data-tab="graphs" title="Graphs">
+      <span class="tab-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m7 16 4-8 4 4 5-9"/></svg></span>
+      <span class="tab-label">GRAPHS</span>
+    </button>
+  </div>
+
+  <!-- ============ TAB: LAYERS ============ -->
+  <div class="tab-page active" id="page-layers">
+    <div class="scroll-area">
+      <!-- Stats -->
+      <section class="card">
+        <div class="card-head">
+          <div class="card-title-row">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m7 16 4-8 4 4 5-9"/></svg>
+            <span>Active Comp</span>
+          </div>
+          <button id="btn-refresh-stats" class="mini-btn" title="Refresh values">Refresh</button>
+        </div>
+        <div class="stat-grid" id="stats-grid">
+          <div class="stat"><div class="stat-label">LAYERS</div><div class="stat-val" id="st-layers">0</div></div>
+          <div class="stat"><div class="stat-label">ADJ</div><div class="stat-val" id="st-adj">0</div></div>
+          <div class="stat"><div class="stat-label">NULLS</div><div class="stat-val" id="st-nulls">0</div></div>
+          <div class="stat"><div class="stat-label">PRECOMPS</div><div class="stat-val" id="st-precomps">0</div></div>
+          <div class="stat"><div class="stat-label">TEXT</div><div class="stat-val" id="st-text">0</div></div>
+          <div class="stat"><div class="stat-label">EFFECTS</div><div class="stat-val" id="st-fx">0</div></div>
+          <div class="stat"><div class="stat-label">KEYFRAMES</div><div class="stat-val" id="st-kf">0</div></div>
+          <div class="stat"><div class="stat-label">MOST USED</div><div class="stat-val small" id="st-topfx">--</div></div>
+        </div>
+      </section>
+
+      <div class="grid-2">
+        <!-- KF Assistant -->
+        <section class="card card-cyan">
+          <div class="card-head">
+            <div class="card-title-row">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="m8 12 8 0" transform="rotate(45 12 12)"/></svg>
+              <span>KF Assistant</span>
+            </div>
+          </div>
+          <div class="card-body col">
+            <button id="btn-stretch-kf" class="tool-btn btn-cyan">
+              <span class="accent-bar cyan"></span>
+              <span class="tool-btn-main"><span class="tool-icon cyan"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3 9 15"/><path d="M15 3h6v6"/><path d="M3 21l6-6"/><path d="M9 21H3v-6"/></svg></span><span class="truncate">Stretch KF →' Layer</span></span>
+              <span class="badge">FIT</span>
+            </button>
+            <button id="btn-trim-kf" class="tool-btn btn-violet">
+              <span class="accent-bar violet"></span>
+              <span class="tool-btn-main"><span class="tool-icon violet"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></span><span class="truncate">Trim Layer →' KF</span></span>
+              <span class="badge">TRIM</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Pre-Compose -->
+        <section class="card card-green">
+          <div class="card-head">
+            <div class="card-title-row">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 8-9-5-9 5 9 5 9-5Z"/><path d="m3 8v8l9 5 9-5V8"/></svg>
+              <span>Pre-Compose</span>
+            </div>
+          </div>
+          <div class="card-body col">
+            <div class="select-wrap">
+              <select id="sel-precomp-mode" class="select">
+                <option value="leave">Leave attributes</option>
+                <option value="move" selected>Move attributes</option>
+                <option value="adjust">Adjust comp</option>
+              </select>
+            </div>
+            <button id="btn-precompose" class="primary-btn gold">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 8-9-5-9 5 9 5 9-5Z"/><path d="m3 8v8l9 5 9-5V8"/></svg>
+              Auto Pre-Compose
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <!-- User Presets -->
+      <section class="card card-cyan presets-card">
+        <div class="card-head">
+          <div class="card-title-row">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>
+            <span>User Presets</span>
+          </div>
+          <div class="head-actions">
+            <button id="btn-refresh-presets" class="icon-btn" title="Refresh presets"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></button>
+            <button id="btn-choose-presets" class="icon-btn" title="Choose presets folder"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+        </div>
+        <div class="card-body col">
+          <div class="search-shell">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input id="preset-search" class="search-input" type="text" placeholder="Search presets..."/>
+            <button id="btn-clear-search" class="clear-btn hidden" title="Clear search">✕</button>
+          </div>
+          <div id="preset-list" class="preset-list"><div class="empty-note">No presets</div></div>
+        </div>
+      </section>
+
+      <div class="grid-2">
+        <!-- Adj Layer -->
+        <section class="card card-violet">
+          <div class="card-head"><div class="card-title-row">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 8-9-5-9 5 9 5 9-5Z"/><path d="m3 8v8l9 5 9-5V8"/></svg>
+            <span>Adj. Layer</span></div></div>
+          <div class="card-body col spread">
+            <div>
+              <label class="field-label">COUNT</label>
+              <div class="stepper" data-stepper="adj">
+                <button class="step-btn" data-dir="-1">−</button>
+                <input class="step-input" id="adj-count" type="text" inputmode="numeric" value="1"/>
+                <button class="step-btn" data-dir="1">+</button>
+              </div>
+            </div>
+            <button id="btn-create-adj" class="primary-btn lavender">
+              <span class="split"><span class="left"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Create</span><span class="right">ADJ</span></span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Null Object -->
+        <section class="card card-red">
+          <div class="card-head"><div class="card-title-row">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+            <span>Null Object</span></div></div>
+          <div class="card-body col spread">
+            <div>
+              <label class="field-label">COUNT</label>
+              <div class="stepper" data-stepper="null">
+                <button class="step-btn" data-dir="-1">−</button>
+                <input class="step-input" id="null-count" type="text" inputmode="numeric" value="1"/>
+                <button class="step-btn" data-dir="1">+</button>
+              </div>
+            </div>
+            <button id="btn-create-null" class="primary-btn red">
+              <span class="split"><span class="left"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Create Null</span><span class="right">AE</span></span>
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB: CAPTIONS ============ -->
+  <div class="tab-page" id="page-captions">
+    <div class="scroll-area">
+      <section class="card">
+        <div class="card-head">
+          <div class="card-title-row">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="12" x="3" y="11" rx="2" ry="2"/><path d="M7 41h10"/></svg>
+            <span>Caption Setup</span>
+          </div>
+        </div>
+        <div class="card-body col">
+          <label class="field-label">CAPTION TEXT (one line per caption, format: seconds | text)</label>
+          <textarea id="caption-input" class="textarea" rows="6" placeholder="0.0 | Hello and welcome&#10;2.5 | This is a caption line&#10;5.0 | Generated inside After Effects"></textarea>
+          <div class="row-2">
+            <div>
+              <label class="field-label">DURATION (s)</label>
+              <input id="caption-duration" class="input" type="number" step="0.1" min="0.5" value="3.0"/>
+            </div>
+            <div>
+              <label class="field-label">FONT SIZE</label>
+              <input id="caption-fontsize" class="input" type="number" step="1" min="8" value="60"/>
+            </div>
+          </div>
+          <button id="btn-apply-captions" class="primary-btn mint">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.287 1.288L3 12l5.8 1.9a2 2 0 0 1 1.288 1.287L12 21l1.9-5.8a2 2 0 0 1 1.287-1.288L21 12l-5.8-1.9a2 2 0 0 1-1.288-1.287Z"/></svg>
+            Apply Captions
+          </button>
+          <button id="btn-remove-captions" class="ghost-btn danger">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Remove Captions
+          </button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ============ TAB: TWIXTOR STUDIOS ============ -->
+  <div class="tab-page" id="page-templates">
+    <div class="scroll-area">
+      <section class="card card-violet">
+        <div class="card-head">
+          <div class="card-title-row">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 3v18"/><path d="M3 12h18"/></svg>
+            <span>Twixtor Clips</span>
+          </div>
+        </div>
+        <div class="card-body col">
+          <label class="field-label">MODE</label>
+          <div class="select-wrap">
+            <select id="sel-twixtor-mode" class="select">
+              <option value="anime">Anime Twixtor (frame blend + Pixel Motion)</option>
+              <option value="film">Film Twixtor (live action)</option>
+            </select>
+          </div>
+          <div class="row-2">
+            <div>
+              <label class="field-label">SPEED %</label>
+              <input id="twixtor-speed" class="input" type="number" step="1" min="1" max="400" value="40"/>
+            </div>
+            <div>
+              <label class="field-label">RESOLUTION</label>
+              <div class="select-wrap">
+                <select id="sel-twixtor-res" class="select">
+                  <option value="source">Use clip source resolution</option>
+                  <option value="composition">Use composition resolution</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <button id="btn-apply-twixtor" class="primary-btn violet">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 3v18"/><path d="M3 12h18"/></svg>
+            <span>Twixtor Clips</span><span class="pill">READY</span>
+          </button>
+          <div class="divider"></div>
+          <button id="btn-align-beats" class="ghost-btn">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Align Clips To Beats
+          </button>
+          <button id="btn-fit-beats" class="ghost-btn">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            Fit Between Beats
+          </button>
+          <button id="btn-time-remap-graph" class="ghost-btn">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m7 16 4-8 4 4 5-9"/></svg>
+            Time Remap Graph
+          </button>
+        </div>
+      </section>
+
+      <!-- Time Remap Easing (inline editor) -->
+      <section class="card card-cyan hidden" id="remap-card">
+        <div class="card-head">
+          <div class="card-title-row">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m7 16 4-8 4 4 5-9"/></svg>
+            <span>Time Remap Easing</span>
+          </div>
+          <button id="btn-close-remap" class="icon-btn" title="Close graph editor">✕</button>
+        </div>
+        <div class="card-body col">
+          <div class="select-wrap">
+            <select id="sel-remap-preset" class="select"></select>
+          </div>
+          <canvas id="bezier-canvas" width="280" height="180"></canvas>
+          <div class="bezier-row">
+            <span class="mono-dim">cubic-bezier(</span>
+            <input id="bezier-input" class="input center" type="text" value="0.25, 0.1, 0.25, 1"/>
+            <span class="mono-dim">)</span>
+            <button id="btn-copy-bezier" class="icon-btn" title="Copy cubic-bezier"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button>
+            <button id="btn-read-easing" class="icon-btn" title="Read values from AE"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+            <button id="btn-reset-easing" class="icon-btn" title="Reset to selected preset"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></button>
+          </div>
+          <button id="btn-apply-easing" class="primary-btn cyan">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m7 16 4-8 4 4 5-9"/></svg>
+            Apply to Keyframes
+          </button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ============ TAB: BEATS ============ -->
+  <div class="tab-page" id="page-beats">
+    <div class="scroll-area">
+      <section class="card">
+        <div class="card-head">
+          <div class="card-title-row">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span>Audio Layer (place markers on)</span>
+          </div>
+        </div>
+        <div class="card-body col">
+          <div class="row-2">
+            <div class="select-wrap grow">
+              <select id="sel-audio-layer" class="select"><option value="">No audio layers</option></select>
+            </div>
+            <button id="btn-refresh-audio" class="icon-btn" title="Reload available audio layers">Refresh</button>
+          </div>
+          <button id="btn-gen-amp" class="ghost-btn accent">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            Generate Audio Amplitude Layer
+          </button>
+          <div id="amp-status" class="status-box info">No amplitude layer. Create it manually first.</div>
+          <p class="hint">AE does not link an Audio Amplitude layer to its source — make sure the selected audio layer and the amplitude layer are a pair.</p>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <div class="card-title-row">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4"/><path d="M12 19v4"/><path d="M4.22 4.22l2.83 2.83"/><path d="M16.95 16.95l2.83 2.83"/><path d="M1 12h4"/><path d="M19 12h4"/><path d="M4.22 19.78l2.83-2.83"/><path d="M16.95 7.05l2.83-2.83"/></svg>
+            <span>Detection Settings</span>
+          </div>
+        </div>
+        <div class="card-body col">
+          <label class="field-label">MODE</label>
+          <div class="select-wrap">
+            <select id="sel-beat-mode" class="select">
+              <option value="strongest">Strongest Beats</option>
+              <option value="all">All Beats</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <div class="card-title-row">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+            <span>Marker Names</span>
+          </div>
+        </div>
+        <div class="card-body col">
+          <label class="check-row"><input type="radio" name="naming" value="default" checked/> <span>Default ("Beat")</span></label>
+          <label class="check-row"><input type="radio" name="naming" value="custom"/> <span>Custom</span>
+            <input id="name-custom" class="input compact" type="text" placeholder="Drop" disabled/></label>
+          <label class="check-row"><input type="radio" name="naming" value="sequential"/> <span>Sequential</span>
+            <input id="name-sequential" class="input compact" type="text" placeholder="Scene" disabled/></label>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <div class="card-title-row">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" stroke-dasharray="4 3"/></svg>
+            <span>Marker Colors</span>
+          </div>
+        </div>
+        <div class="card-body col">
+          <label class="check-row"><input type="radio" name="coloring" value="random"/> <span>Random Colors</span></label>
+          <label class="check-row"><input type="radio" name="coloring" value="single" checked/> <span>Single</span>
+            <div class="select-wrap inline-select"><select id="sel-marker-color" class="select compact">
+              <option value="aqua" selected>Aqua</option>
+              <option value="red">Red</option><option value="yellow">Yellow</option>
+              <option value="blue">Blue</option><option value="green">Green</option>
+              <option value="purple">Purple</option><option value="orange">Orange</option>
+              <option value="pink">Pink</option><option value="lavender">Lavender</option>
+              <option value="peach">Peach</option><option value="seafoam">Sea Foam</option>
+              <option value="brown">Brown</option><option value="fuchsia">Fuchsia</option>
+              <option value="cyan">Cyan</option><option value="sandstone">Sandstone</option>
+              <option value="darkgreen">Dark Green</option>
+            </select></div></label>
+          <label class="check-row"><input type="radio" name="coloring" value="strength"/> <span>Strength Based (Red=Strong)</span></label>
+          <p class="hint">Colors use AE's 16 marker label colors (comp markers). Random picks from all 16.</p>
+        </div>
+      </section>
+
+      <button id="btn-generate-beats" class="primary-btn outlined">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Generate Beat Markers
+      </button>
+
+      <div class="row-2">
+        <button id="btn-clear-tool-markers" class="ghost-btn">Clear Markers</button>
+        <button id="btn-remove-amp" class="ghost-btn danger">Remove Amp Layers</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB: GRAPHS ============ -->
+  <div class="tab-page" id="page-graphs">
+    <div class="scroll-area">
+      <section class="card">
+        <div class="card-head">
+          <div class="card-title-row">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m7 16 4-8 4 4 5-9"/></svg>
+            <span>Graph Editor</span>
+          </div>
+        </div>
+        <div class="card-body col">
+          <div class="select-wrap">
+            <select id="sel-graph-preset" class="select"></select>
+          </div>
+          <canvas id="graph-canvas" width="300" height="190"></canvas>
+          <div class="bezier-row">
+            <span class="mono-dim">cubic-bezier(</span>
+            <input id="graph-bezier-input" class="input center" type="text" value="0.25, 0.1, 0.25, 1"/>
+            <span class="mono-dim">)</span>
+            <button id="btn-graph-copy" class="icon-btn" title="Copy cubic-bezier"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button>
+            <button id="btn-graph-read" class="icon-btn" title="Read values from AE"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+            <button id="btn-graph-reset" class="icon-btn" title="Reset to selected preset"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg></button>
+            <button id="btn-graph-linear" class="icon-btn" title="Set linear curve"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/></svg></button>
+          </div>
+          <button id="btn-graph-apply" class="primary-btn cyan">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m7 16 4-8 4 4 5-9"/></svg>
+            Apply to Keyframes
+          </button>
+          <p class="hint">Select keyframes on any property in AE (or none to affect all keys). The curve is applied to every selected segment as temporal ease.</p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ============ STATUS BAR ============ -->
+  <div class="statusbar">
+    <span class="status-dot-wrap"><span class="status-dot"></span><span id="status-text" class="status-text">SYSTEM // ONLINE</span></span>
+    <span class="status-line"></span>
+    <span class="status-version">v1.0.LIFE</span>
+  </div>
+
+  <!-- ============ TOASTS ============ -->
+  <div id="toast-wrap"></div>
+
+  <!-- ============ SETTINGS DIALOG ============ -->
+  <div class="overlay hidden" id="dlg-settings">
+    <div class="dialog">
+      <div class="dialog-head">
+        <div class="dialog-title">Settings</div>
+        <button class="icon-btn" id="btn-close-settings">✕</button>
+      </div>
+      <div class="dialog-body">
+        <label class="field-label">PRESET THEMES</label>
+        <div class="select-wrap">
+          <select id="sel-theme" class="select">
+            <option value="charcoal" selected>Charcoal</option>
+            <option value="midnight">Midnight</option>
+            <option value="amber">Warm Amber</option>
+            <option value="violet">Violet</option>
+            <option value="teal">Teal</option>
+            <option value="monochrome">Monochrome</option>
+          </select>
+        </div>
+        <label class="field-label">ACCENT COLOR</label>
+        <div class="swatch-row" id="accent-swatches">
+          <button class="swatch" data-accent="#C4453C" style="background:#C4453C" title="Red"></button>
+          <button class="swatch" data-accent="#C9954B" style="background:#C9954B" title="Amber"></button>
+          <button class="swatch" data-accent="#6FA070" style="background:#6FA070" title="Green"></button>
+          <button class="swatch" data-accent="#5E8FA0" style="background:#5E8FA0" title="Teal"></button>
+          <button class="swatch" data-accent="#8E6FA8" style="background:#8E6FA8" title="Violet"></button>
+          <button class="swatch" data-accent="#B0A090" style="background:#B0A090" title="Neutral"></button>
+          <input type="color" id="accent-picker" value="#C4453C" title="Custom accent color" style="width:22px;height:20px;padding:0;border:1px solid var(--border);background:none;border-radius:3px;cursor:pointer;"/>
+        </div>
+        <label class="field-label">DARKNESS</label>
+        <input id="darkness-range" class="range-input" type="range" min="0" max="3" step="1" value="0"/>
+        <div class="dark-labels"><span>Very dark</span><span>Charcoal</span><span>Light charcoal</span><span>Bright charcoal</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CACHE DIALOG ============ -->
+  <div class="overlay hidden" id="dlg-cache">
+    <div class="dialog">
+      <div class="dialog-head">
+        <div class="dialog-title">Clear Disk Cache</div>
+        <button class="icon-btn" id="btn-close-cache">✕</button>
+      </div>
+      <div class="dialog-body">
+        <p class="hint">Scans AE disk cache folders for the detected versions and frees removable cache items. Scanning can lag depending on your PC and cache size.</p>
+        <label class="check-row"><input type="checkbox" id="chk-cache-all" checked/> <span>Clear disk cache for all detected AE versions.</span></label>
+        <button id="btn-do-clear-cache" class="primary-btn red">Clear Cache</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script src="js/CSInterface.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

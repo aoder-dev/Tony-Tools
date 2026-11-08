@@ -1,0 +1,10 @@
+# OS / editor noise
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Node (used only at runtime by CEP; no deps installed)
+node_modules/
+
+# CEP debug/user files
+*.log
