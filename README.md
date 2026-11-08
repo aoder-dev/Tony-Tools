@@ -68,6 +68,8 @@ jsx/host.jsx           ExtendScript: all native AE operations
 .debug                 remote debug port (8092)
 .gitignore
 check.ps1              static consistency check
+package.ps1            builds the runtime-only release archive
+dist/                  generated release archives (git-ignored)
 ref-*.*                development scratch (reference dumps, not needed to run the panel)
 LICENSE                MIT
 README.md              this file
@@ -82,6 +84,18 @@ powershell -ExecutionPolicy Bypass -File check.ps1
 ```
 
 It verifies that the CEP manifest is well-formed, that every element id used by `main.js` exists in `index.html`, that the host functions the panel calls are defined in `host.jsx`, and that both scripts keep balanced braces and parentheses.
+
+## Packaging
+
+Build a runtime-only archive (a top-level `Tony-Tools/` folder containing only `CSXS`, `css`, `js`, `jsx`, `index.html` and the MIT `LICENSE`):
+
+```
+powershell -ExecutionPolicy Bypass -File package.ps1
+```
+
+It writes `dist/Tony-Tools-<version>.zip`, taking the version from `CSXS/manifest.xml`. Extract the archive into `%APPDATA%\Adobe\CEP\extensions` to install the panel.
+
+The README, `check.ps1`, `package.ps1`, `.debug` and the `ref-*` reference dumps are deliberately excluded from the archive. A `.zxp` is the same payload signed with Adobe's `ZXPSignCmd`; use that tool with your own certificate if you need a signed installer.
 
 ## Debugging
 
