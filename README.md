@@ -50,10 +50,10 @@ AE-Layers-Tool/        CEP extension source
 |- .debug              remote debug port (8092)
 `- README.md           extension documentation
 
-*.ps1, ref-*.*         development scratch: bundle inspection and validation scripts
+*.ps1, ref-*.*         development scratch: validation helpers and reference dumps
 ```
 
-The loose PowerShell scripts and `ref-` dumps at the repository root are development artifacts used while building the panel. They are not part of the extension and are not needed to install or run it.
+The loose PowerShell scripts and `ref-` dumps at the repository root are development scratch used while building the panel: environment and state checks, syntax validation, and reference copies of the panel bundle. They are not part of the extension and are not needed to install or run it.
 
 ## Debugging
 
